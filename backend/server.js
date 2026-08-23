@@ -8,7 +8,7 @@ const { createClient } = require('@libsql/client');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// --- Turso Database Setup (Correct Pattern) ---
+// --- Turso Database Setup ---
 const libsql = createClient({
   url: process.env.DATABASE_URL,
   authToken: process.env.TURSO_AUTH_TOKEN,
@@ -48,9 +48,7 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-// --- Routes ---
-
-// Root route
+// --- Root ---
 app.get('/', (req, res) => {
   res.json({
     message: 'PrivacyGuard Pro API is running',
@@ -64,12 +62,12 @@ app.get('/', (req, res) => {
   });
 });
 
-// Health check
+// --- Health ---
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Register
+// --- Register ---
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, password, name } = req.body;
@@ -116,7 +114,7 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
-// Login
+// --- Login ---
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -151,7 +149,7 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// Dashboard (protected)
+// --- Dashboard ---
 app.get('/api/dashboard', verifyToken, async (req, res) => {
   try {
     const userId = req.userId;
@@ -198,7 +196,7 @@ app.get('/api/dashboard', verifyToken, async (req, res) => {
   }
 });
 
-// Submit tracker stats (from extension)
+// --- Tracker Stats ---
 app.post('/api/trackers/stats', verifyToken, async (req, res) => {
   try {
     const { trackersBlocked, threatsPrevented, dataSavedMB } = req.body;
@@ -217,7 +215,7 @@ app.post('/api/trackers/stats', verifyToken, async (req, res) => {
   }
 });
 
-// Subscription status
+// --- Subscription Status ---
 app.get('/api/subscription/status', verifyToken, async (req, res) => {
   try {
     const subscription = await prisma.subscription.findUnique({
@@ -236,7 +234,7 @@ app.get('/api/subscription/status', verifyToken, async (req, res) => {
   }
 });
 
-// --- Start Server ---
+// --- Start ---
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 PrivacyGuard API running on port ${PORT}`);
