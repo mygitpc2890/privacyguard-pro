@@ -9,27 +9,28 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // --- Turso Database Setup (Correct Pattern) ---
-// Create the libsql client first
 const libsql = createClient({
   url: process.env.DATABASE_URL,
   authToken: process.env.TURSO_AUTH_TOKEN,
 });
-
-// Then pass it to the Prisma adapter
 const adapter = new PrismaLibSQL(libsql);
 const prisma = new PrismaClient({ adapter });
 
 const app = express();
+
+// --- Middleware ---
 app.use(helmet());
-app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
-// ---------- Helpers ----------
+// --- Helpers ---
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
 };
@@ -47,22 +48,9 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-const checkTrialStatus = async (req, res, next) => {
-  const subscription = await prisma.subscription.findUnique({
-    where: { userId: req.userId },
-  });
-  if (!subscription) return res.status(403).json({ error: 'No subscription found' });
-  const now = new Date();
-  if (subscription.plan === 'free_trial' && new Date(subscription.trialEnd) < now) {
-    return res.status(403).json({ 
-      error: 'Your 1-year free trial has ended. Please upgrade.',
-      expired: true 
-    });
-  }
-  next();
-};
+// --- Routes ---
 
-// ---------- Routes ----------
+// Root route
 app.get('/', (req, res) => {
   res.json({
     message: 'PrivacyGuard Pro API is running',
@@ -71,21 +59,24 @@ app.get('/', (req, res) => {
       health: '/api/health',
       register: '/api/auth/register',
       login: '/api/auth/login',
-      dashboard: '/api/dashboard'
-    }
+      dashboard: '/api/dashboard',
+    },
   });
 });
 
+// Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Register
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, password, name } = req.body;
     if (!email || !password || !name) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
+
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) return res.status(400).json({ error: 'Email already registered' });
 
@@ -109,12 +100,13 @@ app.post('/api/auth/register', async (req, res) => {
       include: { subscription: true },
     });
 
+    // Auto-verify (for demo)
     await prisma.user.update({
       where: { id: user.id },
       data: { verified: true },
     });
 
-    res.status(201).json({ 
+    res.status(201).json({
       message: 'Account created! You now have 1 year free.',
       trialEnd: trialEnd.toISOString(),
     });
@@ -124,10 +116,11 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
+// Login
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await prisma.user.findUnique({ 
+    const user = await prisma.user.findUnique({
       where: { email },
       include: { subscription: true },
     });
@@ -150,7 +143,7 @@ app.post('/api/auth/login', async (req, res) => {
         daysLeft: daysLeft > 0 ? daysLeft : 0,
         isExpired: daysLeft <= 0,
         trialEnd: user.subscription?.trialEnd,
-      }
+      },
     });
   } catch (error) {
     console.error('Login error:', error);
@@ -158,6 +151,7 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
+// Dashboard (protected)
 app.get('/api/dashboard', verifyToken, async (req, res) => {
   try {
     const userId = req.userId;
@@ -172,6 +166,7 @@ app.get('/api/dashboard', verifyToken, async (req, res) => {
     const stats = await prisma.trackerStat.findMany({
       where: { userId, date: { gte: today } },
     });
+
     const totalBlocked = stats.reduce((sum, s) => sum + s.trackersBlocked, 0);
     const totalDataSaved = stats.reduce((sum, s) => sum + s.dataSavedMB, 0);
     const threats = stats.reduce((sum, s) => sum + s.threatsPrevented, 0);
@@ -203,6 +198,7 @@ app.get('/api/dashboard', verifyToken, async (req, res) => {
   }
 });
 
+// Submit tracker stats (from extension)
 app.post('/api/trackers/stats', verifyToken, async (req, res) => {
   try {
     const { trackersBlocked, threatsPrevented, dataSavedMB } = req.body;
@@ -221,6 +217,7 @@ app.post('/api/trackers/stats', verifyToken, async (req, res) => {
   }
 });
 
+// Subscription status
 app.get('/api/subscription/status', verifyToken, async (req, res) => {
   try {
     const subscription = await prisma.subscription.findUnique({
@@ -239,6 +236,7 @@ app.get('/api/subscription/status', verifyToken, async (req, res) => {
   }
 });
 
+// --- Start Server ---
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 PrivacyGuard API running on port ${PORT}`);
