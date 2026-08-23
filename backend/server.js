@@ -4,15 +4,16 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { PrismaClient } = require('@prisma/client');
 const { PrismaLibSQL } = require('@prisma/adapter-libsql');
+const { createClient } = require('@libsql/client');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// --- Turso Database Setup (Prisma 7) ---
-// In Prisma 7, the adapter takes the config directly
-const adapter = new PrismaLibSQL({
+// --- Turso Database Setup (Prisma 5) ---
+const libsql = createClient({
   url: process.env.DATABASE_URL,
   authToken: process.env.TURSO_AUTH_TOKEN,
 });
+const adapter = new PrismaLibSQL(libsql);
 const prisma = new PrismaClient({ adapter });
 
 const app = express();
