@@ -1,14 +1,16 @@
 {
   "name": "privacyguard-backend",
   "version": "1.0.0",
+  "description": "PrivacyGuard Pro API with Turso database",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
-    "@prisma/client": "^5.15.0",
-    "prisma": "^5.15.0",
-    "@prisma/adapter-libsql": "^5.15.0",
+    "@prisma/client": "5.10.2",
+    "prisma": "5.10.2",
+    "@prisma/adapter-libsql": "5.10.2",
     "@libsql/client": "^0.6.0",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.0",
