@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PrivacyGuard Pro - Ultimate Browser Privacy</title>
+    <style>
+        /* ===== RESET & ROOT ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0a1628;
+            --secondary: #1e3a5f;
+            --accent: #00d4aa;
+            --accent-hover: #00b894;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --text: #e8ecf1;
+            --text-muted: #8b9dc3;
+            --glass: rgba(30, 58, 95, 0.4);
+            --glass-border: rgba(0, 212, 170, 0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--primary);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== ANIMATED BACKGROUND ===== */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            top: -25%;
+            left: -25%;
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(0, 212, 170, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(30, 58, 95, 0.5) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0, 212, 170, 0.03) 0%, transparent 70%);
+            animation: bgPulse 15s ease-in-out infinite;
+        }
+        @keyframes bgPulse {
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+            50% {
+                transform: scale(1.05) rotate(2deg);
+            }
+        }
+
+        /* ===== PARTICLES ===== */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 20s infinite linear;
+            z-index: 0;
+        }
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* ===== NAVIGATION ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 22, 40, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: var(--primary);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 170, 0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+        .btn-outline:hover {
+            background: var(--accent);
+            color: var(--primary);
+        }
+        .btn-large {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 6rem 2rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .hero-content {
+            flex: 1;
+            max-width: 600px;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .free-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: rgba(0, 212, 170, 0.15);
+            border: 1px solid var(--accent);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent);
+        }
+
+        /* ===== SHIELD ===== */
+        .hero-visual {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .shield-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+        .shield-main {
+            position: absolute;
+            width: 280px;
+            height: 320px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            border: 2px solid var(--accent);
+            border-radius: 0 0 140px 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            box-shadow: 0 0 60px rgba(0, 212, 170, 0.2), inset 0 0 60px rgba(0, 212, 170, 0.05);
+            animation: shieldFloat 6s ease-in-out infinite;
+        }
+        @keyframes shieldFloat {
+            0%,
+            100% {
+                transform: translate(-50%, -50%) translateY(0);
+            }
+            50% {
+                transform: translate(-50%, -50%) translateY(-15px);
+            }
+        }
+        .orbit-ring {
+            position: absolute;
+            border: 1px solid rgba(0, 212, 170, 0.15);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .orbit-ring:nth-child(1) {
+            width: 350px;
+            height: 350px;
+            animation: orbit 20s linear infinite;
+        }
+        .orbit-ring:nth-child(2) {
+            width: 380px;
+            height: 380px;
+            animation: orbit 25s linear infinite reverse;
+        }
+        @keyframes orbit {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+        .orbit-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+        }
+        .orbit-ring:nth-child(1) .orbit-dot {
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .orbit-ring:nth-child(2) .orbit-dot {
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* ===== FEATURES ===== */
+        .features {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .feature-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+            transform-origin: left;
+        }
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(0, 212, 170, 0.1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.25rem;
+            border: 1px solid var(--glass-border);
+        }
+        .feature-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+        }
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* ===== OS SUPPORT ===== */
+        .os-support {
+            padding: 4rem 2rem;
+            text-align: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .os-icons {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .os-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.5rem 2.5rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+        .os-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+        .os-item .icon {
+            font-size: 2.5rem;
+        }
+        .os-item span {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* ===== PRICING ===== */
+        .pricing {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .pricing-card {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            border: 2px solid var(--accent);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 212, 170, 0.1) 0%, transparent 60%);
+            animation: pricingGlow 8s ease-in-out infinite;
+        }
+        @keyframes pricingGlow {
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(5%, 5%);
+            }
+        }
+        .pricing-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: var(--accent);
+            color: var(--primary);
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        .pricing-card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        .price {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin: 1rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .price span {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        .pricing-features {
+            list-style: none;
+            margin: 2rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .pricing-features li {
+            padding: 0.75rem 0;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 22, 40, 0.95);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .modal {
+            background: var(--primary);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        .modal-close:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+        .modal h2 {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-size: 1.75rem;
+        }
+        .modal-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+        }
+        .form-group input::placeholder {
+            color: rgba(139, 157, 195, 0.5);
+        }
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+        }
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        .checkbox-wrapper input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+        }
+        .forgot-link {
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+        .forgot-link:hover {
+            opacity: 0.8;
+        }
+        .form-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            border: none;
+            border-radius: 10px;
+            color: var(--primary);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .form-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 170, 0.3);
+        }
+        .form-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .form-divider::before,
+        .form-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--glass-border);
+        }
+        .social-login {
+            display: flex;
+            gap: 0.75rem;
+        }
+        .social-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .social-btn:hover {
+            border-color: var(--accent);
+            background: rgba(0, 212, 170, 0.1);
+        }
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .form-footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* ===== DOWNLOAD ===== */
+        .download {
+            padding: 4rem 2rem;
+            text-align: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .download-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .download-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem 2rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.3s;
+            min-width: 220px;
+        }
+        .download-btn:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .download-btn .icon {
+            font-size: 2rem;
+        }
+        .download-btn .info {
+            text-align: left;
+        }
+        .download-btn .info small {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        .download-btn .info strong {
+            font-size: 1.1rem;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: var(--secondary);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateX(150%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 3000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* ===== DASHBOARD ===== */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        .dashboard.active {
+            display: block;
+        }
+        .dashboard-header {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+        .sidebar {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+        .sidebar-menu {
+            list-style: none;
+        }
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(0, 212, 170, 0.1);
+            color: var(--accent);
+        }
+        .sidebar-menu a .icon {
+            font-size: 1.2rem;
+        }
+        .dashboard-main {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        .stat-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+        .stat-card .label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stat-card .change {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+        .change.positive {
+            color: var(--accent);
+        }
+        .panel {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .panel-header h3 {
+            font-size: 1.1rem;
+        }
+        .toggle-switch {
+            width: 48px;
+            height: 26px;
+            background: var(--secondary);
+            border-radius: 13px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .toggle-switch.active {
+            background: var(--accent);
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+        .toggle-switch.active::after {
+            transform: translateX(22px);
+        }
+        .protection-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .protection-item:last-child {
+            border-bottom: none;
+        }
+        .protection-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .protection-info .icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 212, 170, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .protection-info .icon.danger {
+            background: rgba(231, 76, 60, 0.1);
+        }
+        .protection-info .icon.warning {
+            background: rgba(243, 156, 18, 0.1);
+        }
+        .protection-text h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+        .protection-text p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-badge.active {
+            background: rgba(0, 212, 170, 0.15);
+            color: var(--accent);
+        }
+        .status-badge.inactive {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--danger);
+        }
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                gap: 3rem;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero-cta {
+                justify-content: center;
+            }
+            .shield-container {
+                width: 280px;
+                height: 280px;
+            }
+            .shield-main {
+                width: 200px;
+                height: 230px;
+                font-size: 4rem;
+            }
+            .nav-links {
+                display: none;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== BACKGROUND & PARTICLES ===== -->
+    <div class="bg-animation"></div>
+    <div id="particles"></div>
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav>
+        <div class="logo">
+            <div class="logo-icon">🛡️</div>
+            PrivacyGuard Pro
+        </div>
+        <div class="nav-links">
+            <a onclick="scrollToSection('features')">Features</a>
+            <a onclick="scrollToSection('pricing')">Pricing</a>
+            <a onclick="scrollToSection('download')">Download</a>
+            <button class="btn btn-outline" onclick="openModal('login')">Log In</button>
+            <button class="btn btn-primary" onclick="openModal('signup')">Get Started</button>
+        </div>
+    </nav>
+
+    <!-- ===== LANDING ===== -->
+    <div class="main-content" id="landing">
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span>🔒</span>
+                    Trusted by 2M+ users worldwide
+                </div>
+                <h1>Take Back Your<br />Online Privacy</h1>
+                <p>Advanced browser protection that blocks trackers, masks your identity, and secures your data across Windows and Mac. Start your free 1-year subscription today.</p>
+                <div class="hero-cta">
+                    <button class="btn btn-primary btn-large" onclick="openModal('signup')">
+                        Start Free 1-Year
+                    </button>
+                    <div class="free-badge">
+                        <span>🎁</span>
+                        No credit card required
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="shield-container">
+                    <div class="orbit-ring"><div class="orbit-dot"></div></div>
+                    <div class="orbit-ring"><div class="orbit-dot"></div></div>
+                    <div class="shield-main">🛡️</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURES -->
+        <section class="features" id="features">
+            <div class="section-header">
+                <h2>Complete Privacy Protection</h2>
+                <p>Everything you need to stay anonymous and secure while browsing the web</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚫</div>
+                    <h3>Tracker Blocking</h3>
+                    <p>Automatically blocks over 10,000 known trackers and analytics scripts from collecting your browsing data.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎭</div>
+                    <h3>Digital Fingerprint Masking</h3>
+                    <p>Spoofs your browser fingerprint to prevent identification across websites and sessions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Encrypted DNS</h3>
+                    <p>All DNS queries are encrypted and routed through privacy-first servers, hiding your browsing history from ISPs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧹</div>
+                    <h3>Auto Data Cleanup</h3>
+                    <p>Scheduled clearing of cookies, cache, local storage, and session data with customizable rules.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>VPN Integration</h3>
+                    <p>Built-in VPN with servers in 50+ countries for complete IP masking and geo-unblocking.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Privacy Dashboard</h3>
+                    <p>Real-time insights into blocked threats, saved bandwidth, and protection statistics.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- OS SUPPORT -->
+        <section class="os-support">
+            <div class="section-header">
+                <h2>Available for Your Platform</h2>
+                <p>Native applications optimized for both Windows and macOS</p>
+            </div>
+            <div class="os-icons">
+                <div class="os-item">
+                    <div class="icon">🪟</div>
+                    <span>Windows 10 & 11</span>
+                </div>
+                <div class="os-item">
+                    <div class="icon">🍎</div>
+                    <span>macOS 12+</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRICING -->
+        <section class="pricing" id="pricing">
+            <div class="section-header">
+                <h2>Simple, Transparent Pricing</h2>
+                <p>Start with a full year of premium protection, absolutely free</p>
+            </div>
+            <div class="pricing-card">
+                <div class="pricing-badge">🎉 LIMITED TIME OFFER</div>
+                <h3>1-Year Free Subscription</h3>
+                <div class="price">$0 <span>/ year</span></div>
+                <ul class="pricing-features">
+                    <li>All premium features included</li>
+                    <li>Unlimited devices</li>
+                    <li>Priority support</li>
+                    <li>VPN with 50+ locations</li>
+                    <li>Advanced fingerprint protection</li>
+                    <li>Real-time threat blocking</li>
+                </ul>
+                <button class="btn btn-primary btn-large" onclick="openModal('signup')" style="width:100%;">
+                    Claim Your Free Year
+                </button>
+            </div>
+        </section>
+
+        <!-- DOWNLOAD -->
+        <section class="download" id="download">
+            <div class="section-header">
+                <h2>Download PrivacyGuard Pro</h2>
+                <p>Get started in minutes with our easy installer</p>
+            </div>
+            <div class="download-buttons">
+                <a href="#" class="download-btn" onclick="showToast('Windows download starting...')">
+                    <div class="icon">🪟</div>
+                    <div class="info">
+                        <small>Download for</small>
+                        <strong>Windows</strong>
+                    </div>
+                </a>
+                <a href="#" class="download-btn" onclick="showToast('macOS download starting...')">
+                    <div class="icon">🍎</div>
+                    <div class="info">
+                        <small>Download for</small>
+                        <strong>macOS</strong>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact</a>
+                <a href="#">Support</a>
+            </div>
+            <p>© 2024 PrivacyGuard Pro. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="dashboard" id="dashboard">
+        <div class="dashboard-header">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h1 style="font-size:1.75rem;">Dashboard</h1>
+                    <p style="color:var(--text-muted); margin-top:0.5rem;">Welcome back! Your privacy is protected.</p>
+                </div>
+                <div class="user-menu">
+                    <span style="color:var(--text-muted); font-size:0.9rem;">Free Plan — 364 days left</span>
+                    <div class="user-avatar" id="userAvatar">JD</div>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-grid">
+            <aside class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="active"><span class="icon">📊</span> Overview</a></li>
+                    <li><a href="#"><span class="icon">🛡️</span> Protection</a></li>
+                    <li><a href="#"><span class="icon">🌐</span> VPN</a></li>
+                    <li><a href="#"><span class="icon">🎭</span> Identity</a></li>
+                    <li><a href="#"><span class="icon">🧹</span> Cleanup</a></li>
+                    <li><a href="#"><span class="icon">⚙️</span> Settings</a></li>
+                </ul>
+            </aside>
+            <div class="dashboard-main">
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="label">Trackers Blocked Today</div>
+                        <div class="value" id="trackersBlocked">2,847</div>
+                        <div class="change positive">↑ 12% from yesterday</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Data Saved</div>
+                        <div class="value" id="dataSaved">142 MB</div>
+                        <div class="change positive">↑ 8% this week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Threats Prevented</div>
+                        <div class="value" id="threatsPrevented">23</div>
+                        <div class="change positive">All clear now</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Protection Score</div>
+                        <div class="value" id="protectionScore">98%</div>
+                        <div class="change positive">Excellent</div>
+                    </div>
+                </div>
+
+                <!-- Active Protections -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3>🛡️ Active Protections</h3>
+                        <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+                    </div>
+                    <div class="protection-item">
+                        <div class="protection-info">
+                            <div class="icon">🚫</div>
+                            <div class="protection-text">
+                                <h4>Ad & Tracker Blocking</h4>
+                                <p>Blocks ads, trackers, and analytics</p>
+                            </div>
+                        </div>
+                        <span class="status-badge active">Active</span>
+                    </div>
+                    <div class="protection-item">
+                        <div class="protection-info">
+                            <div class="icon">🎭</div>
+                            <div class="protection-text">
+                                <h4>Fingerprint Randomization</h4>
+                                <p>Masks browser fingerprint every session</p>
+                            </div>
+                        </div>
+                        <span class="status-badge active">Active</span>
+                    </div>
+                    <div class="protection-item">
+                        <div class="protection-info">
+                            <div class="icon">🔐</div>
+                            <div class="protection-text">
+                                <h4>DNS-over-HTTPS</h4>
+                                <p>Encrypts all DNS queries</p>
+                            </div>
+                        </div>
+                        <span class="status-badge active">Active</span>
+                    </div>
+                    <div class="protection-item">
+                        <div class="protection-info">
+                            <div class="icon warning">⚠️</div>
+                            <div class="protection-text">
+                                <h4>VPN Connection</h4>
+                                <p>Secure tunnel to privacy servers</p>
+                            </div>
+                        </div>
+                        <span class="status-badge inactive">Off</span>
+                    </div>
+                </div>
+
+                <!-- Quick VPN -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3>🌐 Quick Connect VPN</h3>
+                    </div>
+                    <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                        <button class="btn btn-outline" onclick="showToast('Connecting to USA...')">🇺🇸 USA</button>
+                        <button class="btn btn-outline" onclick="showToast('Connecting to UK...')">🇬🇧 UK</button>
+                        <button class="btn btn-outline" onclick="showToast('Connecting to Germany...')">🇩🇪 Germany</button>
+                        <button class="btn btn-outline" onclick="showToast('Connecting to Japan...')">🇯🇵 Japan</button>
+                        <button class="btn btn-outline" onclick="showToast('Connecting to Netherlands...')">🇳🇱 Netherlands</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODALS ===== -->
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('login')">×</button>
+            <h2>Welcome Back</h2>
+            <p class="modal-subtitle">Log in to manage your privacy protection</p>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="you@example.com" required id="loginEmail" />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="••••••••" required id="loginPassword" />
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" checked />
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+                <button type="submit" class="form-submit">Log In</button>
+            </form>
+            <div class="form-divider">or continue with</div>
+            <div class="social-login">
+                <button class="social-btn" onclick="showToast('Google login coming soon')">G</button>
+                <button class="social-btn" onclick="showToast('Apple login coming soon')">🍎</button>
+                <button class="social-btn" onclick="showToast('Microsoft login coming soon')">🪟</button>
+            </div>
+            <div class="form-footer">
+                Don't have an account? <a href="#" onclick="switchModal('signup')">Sign up free</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal-overlay" id="signupModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('signup')">×</button>
+            <h2>Start Your Free Year</h2>
+            <p class="modal-subtitle">Create your account — no credit card needed</p>
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="John Doe" required id="signupName" />
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="you@example.com" required id="signupEmail" />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Min. 8 characters" required id="signupPassword" />
+                </div>
+                <div class="form-group">
+                    <label>Confirm Platform</label>
+                    <div style="display:flex; gap:1rem;">
+                        <label class="checkbox-wrapper" style="flex:1; padding:0.75rem; background:var(--glass); border-radius:10px; justify-content:center;">
+                            <input type="radio" name="os" value="windows" checked />
+                            🪟 Windows
+                        </label>
+                        <label class="checkbox-wrapper" style="flex:1; padding:0.75rem; background:var(--glass); border-radius:10px; justify-content:center;">
+                            <input type="radio" name="os" value="mac" />
+                            🍎 Mac
+                        </label>
+                    </div>
+                </div>
+                <div style="margin-bottom:1.5rem;">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" required />
+                        I agree to the <a href="#" style="color:var(--accent);">Terms of Service</a> and <a href="#" style="color:var(--accent);">Privacy Policy</a>
+                    </label>
+                </div>
+                <button type="submit" class="form-submit">Claim Free 1-Year Subscription</button>
+            </form>
+            <div class="form-divider">or sign up with</div>
+            <div class="social-login">
+                <button class="social-btn" onclick="showToast('Google signup coming soon')">G</button>
+                <button class="social-btn" onclick="showToast('Apple signup coming soon')">🍎</button>
+                <button class="social-btn" onclick="showToast('Microsoft signup coming soon')">🪟</button>
+            </div>
+            <div class="form-footer">
+                Already have an account? <a href="#" onclick="switchModal('login')">Log in</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast">
+        <span id="toastIcon">✓</span>
+        <span id="toastMessage">Operation successful</span>
+    </div>
+
+    <!-- ============================================================ -->
+    <!--  SCRIPT  —  replaced with the new script from script.txt       -->
+    <!-- ============================================================ -->
+    <script>
+        // ==========================================
+        // CONFIGURATION
+        // ==========================================
+        const API_BASE = 'http://localhost:5000/api'; // Change to your live backend URL later
+
+        // ==========================================
+        // PARTICLES
+        // ==========================================
+        function createParticles() {
+            const container = document.getElementById('particles');
+            if (!container) return;
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // ==========================================
+        // MODAL HELPERS
+        // ==========================================
+        function openModal(type) {
+            const modal = document.getElementById(type + 'Modal');
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(type) {
+            const modal = document.getElementById(type + 'Modal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function switchModal(type) {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+            setTimeout(() => openModal(type), 150);
+        }
+
+        // Close modals on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        // Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+                document.body.style.overflow = '';
+            }
+        });
+
+        // ==========================================
+        // TOAST NOTIFICATION
+        // ==========================================
+        function showToast(message, icon = '✓', duration = 3500) {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            document.getElementById('toastMessage').textContent = message;
+            document.getElementById('toastIcon').textContent = icon;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), duration);
+        }
+
+        // ==========================================
+        // AUTH FUNCTIONS (REAL API)
+        // ==========================================
+        async function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+
+            if (password.length < 8) {
+                showToast('Password must be at least 8 characters', '⚠️');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password }),
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    closeModal('signup');
+                    showToast('🎉 Account created! You have 1 year free. Please log in.', '✅');
+                    setTimeout(() => openModal('login'), 2000);
+                } else {
+                    showToast(data.error || 'Registration failed', '⚠️');
+                }
+            } catch (err) {
+                showToast('Network error. Is the backend running?', '⚠️');
+                console.error(err);
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('subscription', JSON.stringify(data.subscription));
+                    closeModal('login');
+                    showDashboard(data.user.name);
+                    await fetchDashboardStats();
+                } else {
+                    showToast(data.error || 'Login failed', '⚠️');
+                }
+            } catch (err) {
+                showToast('Network error. Is the backend running?', '⚠️');
+                console.error(err);
+            }
+        }
+
+        // ==========================================
+        // DASHBOARD
+        // ==========================================
+        function showDashboard(userName) {
+            document.getElementById('landing').style.display = 'none';
+            const dashboard = document.getElementById('dashboard');
+            dashboard.classList.add('active');
+            // Update avatar
+            const avatar = document.getElementById('userAvatar');
+            if (avatar) {
+                const initials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+                avatar.textContent = initials;
+            }
+            // Show user name in dashboard header
+            const headerName = document.querySelector('.dashboard-header h1');
+            if (headerName) {
+                headerName.textContent = `Dashboard, ${userName}`;
+            }
+            // Start live counter simulation
+            startLiveTrackerSimulation();
+        }
+
+        async function fetchDashboardStats() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/dashboard`, {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                });
+                if (!res.ok) {
+                    if (res.status === 403) {
+                        const err = await res.json();
+                        if (err.expired) {
+                            showToast('⚠️ Your 1-year trial has expired. Please upgrade.', '⏰');
+                            // Redirect to pricing or show upgrade modal
+                        }
+                    }
+                    return;
+                }
+                const data = await res.json();
+
+                document.getElementById('trackersBlocked').textContent = data.trackersBlocked.toLocaleString();
+                document.getElementById('dataSaved').textContent = data.dataSaved.toFixed(0) + ' MB';
+                document.getElementById('threatsPrevented').textContent = data.threatsPrevented;
+                document.getElementById('protectionScore').textContent = data.protectionScore + '%';
+
+                // Update days left in top-right
+                const daysElement = document.querySelector('.user-menu span');
+                if (daysElement) {
+                    if (data.isExpired) {
+                        daysElement.textContent = '⏰ Trial Expired — Upgrade';
+                        daysElement.style.color = '#e74c3c';
+                    } else {
+                        daysElement.textContent = `Free Plan — ${data.daysLeft} days left`;
+                        daysElement.style.color = 'var(--text-muted)';
+                    }
+                }
+            } catch (err) {
+                console.error('Dashboard fetch error:', err);
+            }
+        }
+
+        // ==========================================
+        // LIVE TRACKER SIMULATION (for demo)
+        // ==========================================
+        let liveInterval = null;
+
+        function startLiveTrackerSimulation() {
+            if (liveInterval) clearInterval(liveInterval);
+            liveInterval = setInterval(() => {
+                const el = document.getElementById('trackersBlocked');
+                if (!el || !document.getElementById('dashboard').classList.contains('active')) return;
+                const current = parseInt(el.textContent.replace(/,/g, ''));
+                if (!isNaN(current)) {
+                    el.textContent = (current + Math.floor(Math.random() * 3) + 1).toLocaleString();
+                }
+            }, 4000);
+        }
+
+        // ==========================================
+        // SCROLL TO SECTION
+        // ==========================================
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ==========================================
+        // CHECK IF USER IS ALREADY LOGGED IN
+        // ==========================================
+        (function checkAuth() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            if (token && user) {
+                showDashboard(user.name);
+                fetchDashboardStats();
+            }
+        })();
+
+        // ==========================================
+        // LOGOUT
+        // ==========================================
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('subscription');
+            if (liveInterval) clearInterval(liveInterval);
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('landing').style.display = 'block';
+            showToast('Logged out successfully', '👋');
+        }
+
+        // Add logout button to dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            const userMenu = document.querySelector('.user-menu');
+            if (userMenu) {
+                const logoutBtn = document.createElement('button');
+                logoutBtn.textContent = 'Logout';
+                logoutBtn.className = 'btn btn-outline';
+                logoutBtn.style.marginLeft = '1rem';
+                logoutBtn.style.padding = '0.4rem 1rem';
+                logoutBtn.onclick = logout;
+                userMenu.appendChild(logoutBtn);
+            }
+        });
+
+        console.log('🔒 PrivacyGuard Pro loaded. API endpoint:', API_BASE);
+    </script>
+
+</body>
+</html>
