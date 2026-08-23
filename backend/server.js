@@ -4,16 +4,14 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { PrismaClient } = require('@prisma/client');
 const { PrismaLibSQL } = require('@prisma/adapter-libsql');
-const { createClient } = require('@libsql/client');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// --- Turso Database Setup ---
-const libsql = createClient({
+// --- Turso Database Setup (Simplified) ---
+const adapter = new PrismaLibSQL({
   url: process.env.DATABASE_URL,
   authToken: process.env.TURSO_AUTH_TOKEN,
 });
-const adapter = new PrismaLibSQL(libsql);
 const prisma = new PrismaClient({ adapter });
 
 const app = express();
@@ -88,7 +86,6 @@ app.post('/api/auth/register', async (req, res) => {
       include: { subscription: true },
     });
 
-    // Auto-verify for demo (since we may not have email configured)
     await prisma.user.update({
       where: { id: user.id },
       data: { verified: true },
