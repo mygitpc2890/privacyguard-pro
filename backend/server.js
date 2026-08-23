@@ -4,19 +4,29 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { PrismaClient } = require('@prisma/client');
 const { PrismaLibSQL } = require('@prisma/adapter-libsql');
+const { createClient } = require('@libsql/client');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// --- Turso Database Setup (Simplified) ---
-const adapter = new PrismaLibSQL({
+// --- Turso Database Setup (Correct Pattern) ---
+// Create the libsql client first
+const libsql = createClient({
   url: process.env.DATABASE_URL,
   authToken: process.env.TURSO_AUTH_TOKEN,
 });
+
+// Then pass it to the Prisma adapter
+const adapter = new PrismaLibSQL(libsql);
 const prisma = new PrismaClient({ adapter });
 
 const app = express();
 app.use(helmet());
-app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
+app.use(cors({
+  origin: process.env.FRONTEND_URL || '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 app.use(express.json());
 
 // ---------- Helpers ----------
@@ -53,6 +63,19 @@ const checkTrialStatus = async (req, res, next) => {
 };
 
 // ---------- Routes ----------
+app.get('/', (req, res) => {
+  res.json({
+    message: 'PrivacyGuard Pro API is running',
+    status: 'healthy',
+    endpoints: {
+      health: '/api/health',
+      register: '/api/auth/register',
+      login: '/api/auth/login',
+      dashboard: '/api/dashboard'
+    }
+  });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
@@ -96,8 +119,8 @@ app.post('/api/auth/register', async (req, res) => {
       trialEnd: trialEnd.toISOString(),
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Registration failed. Please try again.' });
+    console.error('Registration error:', error);
+    res.status(500).json({ error: 'Registration failed: ' + error.message });
   }
 });
 
@@ -130,8 +153,8 @@ app.post('/api/auth/login', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Login failed' });
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Login failed: ' + error.message });
   }
 });
 
@@ -175,7 +198,7 @@ app.get('/api/dashboard', verifyToken, async (req, res) => {
       userName: user.name,
     });
   } catch (error) {
-    console.error(error);
+    console.error('Dashboard error:', error);
     res.status(500).json({ error: 'Failed to fetch dashboard' });
   }
 });
@@ -193,7 +216,7 @@ app.post('/api/trackers/stats', verifyToken, async (req, res) => {
     });
     res.status(201).json({ success: true });
   } catch (error) {
-    console.error(error);
+    console.error('Stats error:', error);
     res.status(500).json({ error: 'Failed to save stats' });
   }
 });
